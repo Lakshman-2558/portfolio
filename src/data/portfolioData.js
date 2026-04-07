@@ -40,7 +40,7 @@ export const projects = [
     title: "Invigilator Management System",
     description: "An automated faculty & room allocation system with role-based authentication and REST API-based architecture.",
     tech: ["Node.js", "Express", "MongoDB", "React"],
-    github: "https://github.com/lakshman-kaja/invigilator-management",
+    github: "https://github.com/Lakshman-2558/invigilator-management",
     live: "https://invigilator-management-demo.render.com",
     image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=60" // Placeholder image for design
   },

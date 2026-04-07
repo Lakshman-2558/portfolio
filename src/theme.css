@@ -1,0 +1,52 @@
+@theme {
+  /* Vibrant Color Palette */
+  --color-coral:    #FF6B6B;
+  --color-orange:   #FF9F1C;
+  --color-yellow:   #FFD93D;
+  --color-teal:     #2EC4B6;
+  --color-sky:      #4CC9F0;
+  --color-pink:     #F72585;
+  --color-purple:   #7209B7;
+  --color-indigo:   #3A0CA3;
+
+  /* Surfaces */
+  --color-bg:       #FFFBF5;
+  --color-bg-alt:   #F0FBFF;
+  --color-card:     #FFFFFF;
+  --color-text:     #1a1a2e;
+
+  /* Animations */
+  --animate-blob:           blob 8s ease-in-out infinite;
+  --animate-blob-delayed:   blob 8s ease-in-out 3s infinite;
+  --animate-blob-slow:      blob 12s ease-in-out 5s infinite;
+  --animate-gradient-x:     gradient-x 6s ease infinite;
+  --animate-float:          float 5s ease-in-out infinite;
+  --animate-float-delayed:  float 5s ease-in-out 1.5s infinite;
+  --animate-spin-slow:      spin 20s linear infinite;
+  --animate-pulse-slow:     pulse 4s ease-in-out infinite;
+  --animate-shimmer:        shimmer 2.5s linear infinite;
+  --animate-bounce-in:      bounce-in 0.6s cubic-bezier(0.215,0.61,0.355,1) forwards;
+
+  @keyframes blob {
+    0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: scale(1) translate(0,0); }
+    33%  { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: scale(1.05) translate(10px,-10px); }
+    66%  { border-radius: 40% 60% 60% 40% / 40% 40% 60% 60%; transform: scale(0.95) translate(-10px,5px); }
+  }
+  @keyframes gradient-x {
+    0%, 100% { background-position: 0% 50%; }
+    50%       { background-position: 100% 50%; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-18px); }
+  }
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+  }
+  @keyframes bounce-in {
+    0%   { transform: scale(0.8); opacity: 0; }
+    60%  { transform: scale(1.08); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+}

@@ -47,7 +47,7 @@ const Loader = ({ onDone }) => {
           <h1 style={{ fontSize: 24, fontWeight: 900, margin: 0, color: '#1a1a2e' }}>
             LAKSHMAN<span style={{ color: '#FF6B6B' }}>.</span>
           </h1>
-          <p style={{ fontSize: 11, fontFamily: 'monospace', color: '#aaa', letterSpacing: '0.2em', margin: '6px 0 0' }}>FULL-STACK DEVELOPER</p>
+          <p style={{ fontSize: 11, fontFamily: 'monospace', color: '#aaa', letterSpacing: '1em', margin: '6px 0 0', paddingLeft: '1em' }}>PORTFOLIO</p>
         </motion.div>
 
         {/* Progress bar */}

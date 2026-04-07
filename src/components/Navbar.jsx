@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-scroll';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
@@ -13,25 +13,29 @@ const navLinks = [
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const { scrollY } = useScroll();
 
-  useMotionValueEvent(scrollY, 'change', (v) => setScrolled(v > 40));
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <>
       {/* ── Floating Profile Icon (Top Right) ── */}
-      <div style={{ position: 'fixed', top: 32, right: 32, zIndex: 100 }}>
+      <div style={{ position: 'fixed', top: isMobile ? 16 : 32, right: isMobile ? 16 : 32, zIndex: 100 }}>
         {/* Radial nav items — revealed on open */}
         <AnimatePresence>
           {isOpen && navLinks.map((link, i) => {
-            // Bloom even more spread apart
+            // Bloom spread more tighter on mobile
             const totalLinks = navLinks.length;
-            const startAngle = 100; // a bit more than 90 to push items into screen
-            const endAngle = 185;   // push towards the left
+            const startAngle = 100;
+            const endAngle = 185;
             const angle = startAngle + (i * ((endAngle - startAngle) / (totalLinks - 1)));
             const rad = (angle * Math.PI) / 180;
-            const radius = 145; // Increased radius for better spacing
+            const radius = isMobile ? 100 : 145; // Smaller radius on mobile
             const x = Math.cos(rad) * radius;
             const y = Math.sin(rad) * radius;
 
@@ -60,10 +64,10 @@ const Navbar = () => {
                     <motion.div
                       whileHover={{ scale: 1.2, rotate: 10 }}
                       style={{
-                        width: 52, height: 52, borderRadius: '20px', // More modern rounded-rect
+                        width: isMobile ? 44 : 52, height: isMobile ? 44 : 52, borderRadius: '18px',
                         background: `linear-gradient(135deg,${link.color},${link.color}cc)`,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        cursor: 'pointer', color: 'white', fontSize: 22,
+                        cursor: 'pointer', color: 'white', fontSize: isMobile ? 18 : 22,
                         boxShadow: `0 8px 24px ${link.color}66`,
                         border: '2.5px solid white',
                         zIndex: 2,
@@ -74,30 +78,32 @@ const Navbar = () => {
                     </motion.div>
 
                     {/* The Label - Slide out on hover or show by default */}
-                    <motion.span
-                      variants={{
-                        hover: { opacity: 1, scale: 1, x: -85 },
-                      }}
-                      initial={{ opacity: 0, scale: 0.8, x: -60 }}
-                      animate={{ opacity: 1, scale: 1, x: -85 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                      style={{
-                        position: 'absolute',
-                        padding: '6px 14px',
-                        background: 'rgba(255, 255, 255, 0.9)',
-                        backdropFilter: 'blur(8px)',
-                        borderRadius: '12px',
-                        fontSize: '12px',
-                        fontWeight: 900,
-                        color: link.color,
-                        boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-                        pointerEvents: 'none',
-                        whiteSpace: 'nowrap',
-                        border: `1.5px solid ${link.color}22`
-                      }}
-                    >
-                      {link.name}
-                    </motion.span>
+                    {!isMobile && (
+                      <motion.span
+                        variants={{
+                          hover: { opacity: 1, scale: 1, x: -85 },
+                        }}
+                        initial={{ opacity: 0, scale: 0.8, x: -60 }}
+                        animate={{ opacity: 1, scale: 1, x: -85 }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                        style={{
+                          position: 'absolute',
+                          padding: '6px 14px',
+                          background: 'rgba(255, 255, 255, 0.9)',
+                          backdropFilter: 'blur(8px)',
+                          borderRadius: '12px',
+                          fontSize: '12px',
+                          fontWeight: 900,
+                          color: link.color,
+                          boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                          pointerEvents: 'none',
+                          whiteSpace: 'nowrap',
+                          border: `1.5px solid ${link.color}22`
+                        }}
+                      >
+                        {link.name}
+                      </motion.span>
+                    )}
                   </motion.div>
                 </Link>
               </motion.div>
@@ -108,16 +114,16 @@ const Navbar = () => {
         {/* Profile avatar button */}
         <motion.button
           onClick={() => setIsOpen(o => !o)}
-          whileHover={{ scale: 1.06 }}
-          whileTap={{ scale: 0.94 }}
+          whileHover={isMobile ? {} : { scale: 1.06 }}
+          whileTap={{ scale: 0.9 }}
           animate={{ rotate: isOpen ? 360 : 0 }}
           transition={{ type: 'spring', stiffness: 200, damping: 18 }}
           style={{
-            width: 60, height: 60, borderRadius: '50%', cursor: 'pointer',
+            width: isMobile ? 50 : 60, height: isMobile ? 50 : 60, borderRadius: '50%', cursor: 'pointer',
             border: 'none', padding: 0, position: 'relative', display: 'block',
             boxShadow: isOpen
-              ? '0 0 0 4px white, 0 0 0 7px #F72585, 0 12px 40px rgba(247,37,133,0.45)'
-              : '0 0 0 4px white, 0 0 0 7px #FF6B6B, 0 8px 28px rgba(255,107,107,0.4)',
+              ? `0 0 0 4px var(--color-bg), 0 0 0 7px #F72585, 0 12px 40px rgba(247,37,133,0.4)`
+              : `0 0 0 4px var(--color-bg), 0 0 0 7px #FF6B6B, 0 8px 28px rgba(255,107,107,0.3)`,
             transition: 'box-shadow 0.3s',
           }}
         >
@@ -139,13 +145,13 @@ const Navbar = () => {
           />
           {/* Active green dot */}
           <motion.span
-            animate={{ scale: [1, 1.3, 1] }}
+            animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
             style={{
-              position: 'absolute', bottom: 2, right: 2,
-              width: 14, height: 14, borderRadius: '50%',
+              position: 'absolute', bottom: isMobile ? 0 : 2, right: isMobile ? 0 : 2,
+              width: isMobile ? 12 : 14, height: isMobile ? 12 : 14, borderRadius: '50%',
               background: '#22c55e',
-              border: '2px solid white',
+              border: '2px solid var(--color-bg)',
               display: 'block',
             }}
           />
