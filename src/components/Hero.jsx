@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { animate } from 'animejs';
 import { ArrowRight, Download, ChevronDown } from 'lucide-react';
 import { Link } from 'react-scroll';
 import GithubIcon from './icons/GithubIcon';
@@ -41,6 +42,40 @@ const Blob = ({ color, size, top, left, delay = 0 }) => (
 const Hero = () => {
   const typed = useTyping(ROLES);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const profileRef = useRef(null);
+
+  useEffect(() => {
+    if (profileRef.current) {
+      const animateProfile = (manual = false) => {
+        animate(profileRef.current, {
+          rotateY: '+=360',
+          duration: manual ? 1200 : 2000,
+          ease: 'inOutQuart',
+          scale: [
+            { to: 1.1, duration: manual ? 600 : 1000, ease: 'outQuad' },
+            { to: 1, duration: manual ? 600 : 1000, ease: 'inQuad' }
+          ],
+          onComplete: () => {
+            if (!manual) setTimeout(() => animateProfile(), 5000);
+          }
+        });
+      };
+      
+      const handleMouseEnter = () => {
+        animateProfile(true);
+      };
+
+      const el = profileRef.current.parentElement;
+      if (el) el.addEventListener('mouseenter', handleMouseEnter);
+      
+      const initialTimeout = setTimeout(() => animateProfile(), 1000);
+
+      return () => {
+        clearTimeout(initialTimeout);
+        if (el) el.removeEventListener('mouseenter', handleMouseEnter);
+      };
+    }
+  }, []);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -73,7 +108,7 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', order: isMobile ? 1 : 2 }}
         >
-          <div style={{ position: 'relative', display: 'inline-block' }}>
+          <div style={{ position: 'relative', display: 'inline-block', perspective: '1000px' }}>
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
@@ -84,17 +119,20 @@ const Hero = () => {
               }}
             />
             <div style={{ position: 'absolute', inset: -6, borderRadius: '50%', background: 'var(--color-bg)' }} />
-            <img
-              src="/profile.jpeg"
-              alt="Lakshman Kaja"
-              style={{
-                width: isMobile ? '220px' : 'min(380px, 35vw)',
-                height: isMobile ? '220px' : 'min(380px, 35vw)',
-                borderRadius: '50%',
-                objectFit: 'cover', display: 'block', position: 'relative', zIndex: 2,
-                boxShadow: '0 20px 50px rgba(0,0,0,0.1)'
-              }}
-            />
+            <div ref={profileRef} style={{ position: 'relative', zIndex: 2, transformStyle: 'preserve-3d' }}>
+              <img
+                src="/profile.jpeg"
+                alt="Lakshman Kaja"
+                style={{
+                  width: isMobile ? '220px' : 'min(380px, 35vw)',
+                  height: isMobile ? '220px' : 'min(380px, 35vw)',
+                  borderRadius: '50%',
+                  objectFit: 'cover', display: 'block',
+                  boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
+                  border: '4px solid white'
+                }}
+              />
+            </div>
           </div>
         </motion.div>
 
@@ -125,7 +163,7 @@ const Hero = () => {
           {/* Typing */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
             style={{ height: isMobile ? 32 : 44, display: 'flex', alignItems: 'center' }}>
-            <p style={{ fontSize: 'clamp(18px, 5vw, 26px)', fontWeight: 600, color: 'var(--color-text)', opacity: 0.8 }}>
+            <p style={{ fontSize: 'clamp(18px, 5vw, 26px)', fontWeight: 600, color: '#1a1a2e', opacity: 0.9 }}>
               {typed}
               <motion.span
                 animate={{ opacity: [0, 1, 0] }}
@@ -138,14 +176,15 @@ const Hero = () => {
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
             style={{
               maxWidth: 550,
-              color: 'var(--color-text)',
-              opacity: 0.6,
-              fontSize: isMobile ? '15px' : '18px',
+              color: '#334155',
+              fontWeight: 500,
+              fontSize: isMobile ? '16px' : '19px',
               lineHeight: 1.8,
               margin: 0,
-              textAlign: isMobile ? 'center' : 'left'
+              textAlign: isMobile ? 'center' : 'left',
+              textShadow: '0 1px 2px rgba(255,255,255,0.8)'
             }}>
-            I'm a passionate developer building <strong>elegant solutions</strong> through clean code and modern architecture. Specializing in high-performance web experiences.
+            I'm a passionate developer building <strong style={{ color: '#F72585' }}>elegant solutions</strong> through clean code and modern architecture. Specializing in high-performance web experiences.
           </motion.p>
 
           {/* CTAs */}
@@ -186,9 +225,9 @@ const Hero = () => {
               position: 'absolute', bottom: 30, left: '50%', transform: 'translateX(-50%)',
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8
             }}>
-            <span style={{ fontSize: 10, letterSpacing: '0.3em', color: '#ccc', fontWeight: 800 }}>SCROLL</span>
+            <span style={{ fontSize: 10, letterSpacing: '0.4em', color: '#64748b', fontWeight: 900 }}>SCROLL</span>
             <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 2, repeat: Infinity }}>
-              <ChevronDown size={20} color="#bbb" />
+              <ChevronDown size={22} color="#F72585" />
             </motion.div>
           </motion.div>
         )}
